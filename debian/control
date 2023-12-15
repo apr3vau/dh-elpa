@@ -19,7 +19,7 @@ Multi-Arch: foreign
 Depends:
  debhelper (>= 9.20151004),
  libdebian-source-perl | dh-make-perl (>= 0.90),
- emacs-nox (>= 47) | emacs (>= 47.0),
+ emacs-nox (>= 1:28.2+1-9) | emacs (>= 1:28.2+1-9),
  libarray-utils-perl,
  libconfig-tiny-perl,
  libfile-find-rule-perl,

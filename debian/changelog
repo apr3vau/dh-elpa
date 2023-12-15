@@ -1,3 +1,62 @@
+dh-elpa (2.0.16) unstable; urgency=medium
+
+  * Drop dependencies on emacs-el introduced in 2.0.11.
+    Emacs itself now has this dependency.  It's required for native-comp.
+  * install/remove: Export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t.
+    This is likely temporary, pending updates to emacsen-common.
+
+  * dh_elpa_test: Revert changes in 2.0.12, 2.0.13 and 2.0.14.
+  * dh_elpa_test: Export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t.
+    Unconditionally prevent native comp writing to HOME while running tests.
+  * dh_elpa_test: Replace use of smartmatch operator.
+    It is expected that Perl upstream will soon deprecate the operator.
+
+  * Add license & copyright headers to dh_elpa{,_test}.
+  * Tighten dependency on emacs-nox|emacs to require >= 1:28.2+1-9.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Fri, 23 Dec 2022 11:49:04 -0700
+
+dh-elpa (2.0.15) unstable; urgency=medium
+
+  * Add elpa-org to the list of packages that are built-in but also
+    packaged separately in Debian.
+    Thanks to Aymeric Agon-Rambosson for reporting the issue.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Tue, 08 Nov 2022 12:19:46 -0700
+
+dh-elpa (2.0.14) unstable; urgency=medium
+
+  * Per Eli Z. suggestion, try native-comp-eln-load-path to limit reading
+    and writing of eln during dh_elpa_test.
+
+ -- David Bremner <bremner@debian.org>  Sun, 02 Oct 2022 09:18:37 -0300
+
+dh-elpa (2.0.13) unstable; urgency=medium
+
+  * Disable native code when running ERT tests
+
+ -- David Bremner <bremner@debian.org>  Fri, 30 Sep 2022 07:04:56 -0300
+
+dh-elpa (2.0.12) unstable; urgency=medium
+
+  * Set temporary native code cached directory when running (ERT) tests.
+
+ -- David Bremner <bremner@debian.org>  Sun, 25 Sep 2022 08:15:00 -0300
+
+dh-elpa (2.0.11) unstable; urgency=medium
+
+  * Depend (temporarily?) on emacs-el as workaround for #1017698
+
+ -- David Bremner <bremner@debian.org>  Thu, 25 Aug 2022 08:38:18 -0700
+
+dh-elpa (2.0.10) unstable; urgency=medium
+
+  * Update dh_elpa_test documentation
+  * Bug fix: "Adding a basic autopkgtest", thanks to Lukas Märdian
+    (Closes: #1001452).
+
+ -- David Bremner <bremner@debian.org>  Thu, 16 Dec 2021 12:48:45 -0400
+
 dh-elpa (2.0.9) unstable; urgency=medium
 
   * Bug fix: "install error when root user has packages under

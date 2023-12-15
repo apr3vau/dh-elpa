@@ -183,9 +183,10 @@ These are packaged separately for two reasons:
 
 - it permits use of addons with older versions of Emacs, for
   which the dependency is not yet a built-in package."
-  (let ((non-elpa (list 'emacs))
-        (packaged-separately (list 'let-alist 'seq 'xref 'project)))
-    (cl-remove-if (lambda (dep) (let ((pkg (car dep)))
+  (let ((non-elpa '(emacs))
+        (packaged-separately '(let-alist seq xref org project)))
+    (cl-remove-if (lambda (dep)
+		    (let ((pkg (car dep)))
                       (or (memq pkg non-elpa)
                           (and
                            (package-built-in-p pkg)

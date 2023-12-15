@@ -4,6 +4,11 @@
 
 set -e
 
+# Avoid writes to HOME.
+# This should probably move into bin:emacsen-common.
+EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t
+export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION
+
 # safe values for important variables
 
 unset HOME

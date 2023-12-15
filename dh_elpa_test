@@ -1,5 +1,21 @@
 #!/usr/bin/perl
 
+# Copyright (C) 2016, 2017  Sean Whitton <spwhitton@spwhitton.name>
+# Copyright (C) 2021        David Bremner <bremner@debian.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 =head1 NAME
 
 dh_elpa_test - run ELPA package testsuites
@@ -8,7 +24,6 @@ dh_elpa_test - run ELPA package testsuites
 
 use strict;
 use warnings;
-no warnings "experimental::smartmatch";
 
 =head1 SYNOPSIS
 
@@ -142,6 +157,31 @@ example, the B<ert_eval> configuration key replaced environment
 variable B<DH_ELPA_TEST_ERT_EVAL>.  Their use is now deprecated.  If
 the debian/elpa-test file exists, they will be ignored.
 
+=head1 CONTROLLING INVOCATION
+
+The following recipes can be combined to enable an appropriate
+combination of build time and autopkgtest time tests.
+
+=head2 DISABLING BUILD TIME TESTS
+
+To disable running tests at build time, you have two choices. You can
+override B<dh_elpa_test> (not B<dh_auto_test>), or you can use the
+B<disable> key in B<debian/elpa-test>. Note that the latter will also
+(mostly) disable autopkgtests (see below).
+
+=head2 ENABLING AUTOPKGTESTS
+
+To enable running autopkgtests via B<dh_elpa_test>, add "Testsuite:
+autpkgtest-pkg-elpa" to B<debian/control>.  With B<disable> in
+B<debian/elpa-test>, only B<superficial> tests, namely installing the
+binary packages and byte-compiling any that use B<dh_elpa>.
+
+=head2 ENABLING DH_AUTO_TEST
+
+By default B<dh_elpa_test> replaces B<dh_auto_test>. You can re-enable
+B<dh_auto_test> either with the B<disable> key discussed above, or by
+overriding B<dh_elpa_test> to call B<dh_auto_test>.
+
 =cut
 
 use File::Find::Rule;
@@ -151,6 +191,9 @@ use Config::Tiny;
 
 use Debian::Debhelper::Dh_Lib;
 use Debian::Control;
+
+# avoid writes to HOME
+$ENV{EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION} = "t";
 
 # ---- Subroutines
 
@@ -175,7 +218,7 @@ sub long_name {
 # ---- Script setup
 
 # check command line opts for autopkgtest mode
-my $autopkgtest = ( "--autopkgtest" ~~ @ARGV );
+my $autopkgtest = grep $_ eq "--autopkgtest", @ARGV;
 
 # This checks whether the debhelper compat is 10 or above.  With
 # debhelper compat below 9, dh_elpa_test will get run more in more

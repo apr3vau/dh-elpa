@@ -5,6 +5,12 @@ Copyright: © 2007-2015 Free Software Foundation Inc,
 	   © 2015 David Bremner <bremner@debian.org>
 	   © 2016 Sean Whitton <spwhitton@spwhitton.name>
 License: GPL-3+
+
+Files: debian/tests/elpa-test/all.el
+Copyright: © 1985-2020 Free Software Foundation, Inc.
+License: GPL-3+
+
+License: GPL-3+
  dh-elpa  is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or

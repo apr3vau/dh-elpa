@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2015, 2018  David Bremner <bremner@debian.org>
+# Copyright (C) 2015, 2018, 2023  David Bremner <bremner@debian.org>
 # Copyright (C) 2016, 2018  Sean Whitton <spwhitton@spwhitton.name>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -89,6 +89,8 @@ time, and should not usually exist in the upstream source.
 =back
 
 =cut
+
+our $VERSION="2.1.x";
 
 init(options => {
         "emacs-loadpath=s" => \$dh{EMACS_LOADPATH},
@@ -359,7 +361,7 @@ foreach my $package (getpackages()) {
     if (! $dh{NOSCRIPTS}) {
       autoscript($package,"postinst","postinst-emacsen",
                  "s/#PACKAGE#/$package/");
-      autoscript($package,"prerm","prerm-emacsen",
+      autoscript($package,"prerm","prerm-elpa",
                  "s/#PACKAGE#/$package/");
     }
   }

@@ -1,3 +1,127 @@
+dh-elpa (2.1.9) unstable; urgency=medium
+
+  [ Xiyue Deng ]
+  * Remove eglot from packaged-separately.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Fri, 14 Mar 2025 14:53:25 +0800
+
+dh-elpa (2.1.8) unstable; urgency=medium
+
+  * Boost build-dep on Emacs, too, to require 30.1.
+    The package build uses lm-package-requires.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Thu, 06 Mar 2025 19:42:23 +0800
+
+dh-elpa (2.1.7) unstable; urgency=medium
+
+  * Extend docstring for dhelpa-filter-deps-for-debian to discuss addons
+    updates often required after updating Emacs itself.
+  * Add elpa-eglot to the list of packages that are built-in but also
+    packaged separately in Debian.
+  * Drop seq, xref and project from said list of packages.
+    We propose not to include these in trixie, so need to stop generating
+    dependencies on them.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Wed, 26 Feb 2025 17:30:01 +0800
+
+dh-elpa (2.1.6) unstable; urgency=medium
+
+  [ Xiyue Deng ]
+  * Correctly construct ERT selectors S-exp (Closes: #1088086).
+    - Was under the wrong impression that ERT selectors can be specified
+      as the remaining command line arguments.
+      + That turns out to be an extension in flycheck-run-tests-main.
+    - Now properly make it part of the ert-run-tests-batch-and-exit s-exp.
+    - Update documentation accordingly.
+  * Prefer "-f" over "--eval" when running `ert-run-tests-batch-and-exit'
+
+  [ Sean Whitton ]
+  * Replace call to removed package--prepare-dependencies
+    (Closes: #1098846).
+    Thanks to Xiyue Deng for investigating, and finding the fix.
+  * Raise dependency on Emacs to require 30.1 for lm-package-requires.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Tue, 25 Feb 2025 12:26:03 +0800
+
+dh-elpa (2.1.5) unstable; urgency=medium
+
+  [ Xiyue Deng ]
+  * Revert "Don't recursively add elpa path to match package.el behavior"
+    (Closes: #1076964).
+    - This breaks load-path handling in batch mode.
+    - Reverting this commit should no break any existing package as no one
+      has source code in a nested directory yet.
+    - Will provide a more robust approach in a future commit.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Thu, 25 Jul 2024 11:45:37 +0900
+
+dh-elpa (2.1.4) unstable; urgency=medium
+
+  * Team upload.
+  * Rebuild against dh-elpa 2.1.3.
+    Upload pushed to dgit-repos but not salsa.
+    See <https://lists.debian.org/debian-emacsen/2024/07/msg00077.html>.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Wed, 24 Jul 2024 21:46:13 +0900
+
+dh-elpa (2.1.3) unstable; urgency=low
+
+  * Upload to unstable.
+  * Fix some copyright years.
+  * Make autoscripts/prerm-elpa executable.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Wed, 24 Jul 2024 11:20:49 +0900
+
+dh-elpa (2.1.2) experimental; urgency=medium
+
+  [ Xiyue Deng ]
+  * Set ert-batch-backtrace-right-margin to nil to allow full backtrace
+    when ERT tests fail (Closes: #973393).
+  * Add support for passing ERT selectors using ert_selectors.
+  * Handle git version with date in dhelpa-sanitise-version.
+  * dh_elpa_test: Don't rename files under test/, tests/
+    (Closes: #1069326).
+  * Use `pretty' stack frame style in buttercup for full back trace.
+  * Add support for installing nested directories (Closes: #1069210)
+    - Don't recursively add to elpa path, to match package.el
+    - Byte-compile recursively during install
+    - Recursively create the symlinks from elpa-src->elpa.
+
+  [ Aymeric Agon-Rambosson ]
+  * Get Package-Requires with lm-header-multiline (some upstream
+    maintainers specify one dependency per line).
+  * Add transient to the list of packages packaged separately as well as
+    provided with Emacs.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Fri, 12 Jul 2024 14:03:04 +0800
+
+dh-elpa (2.1.1) experimental; urgency=medium
+
+  * Remove /usr/share/$flavor/site-lisp/elpa (from emacsen-remove)
+    if it is empty
+
+ -- David Bremner <bremner@debian.org>  Mon, 04 Sep 2023 08:30:35 -0300
+
+dh-elpa (2.1.0) experimental; urgency=medium
+
+  * Call emacsen-remove script directly from generated prerm. For now this
+    requires a custom debhelper autoscript template, that this package
+    installs.
+  * Eliminate dependency on dh-elpa-helper for emacsen-remove. This will
+    require a rebuild to fix emacsen-remove scripts, but seems mandated by
+    policy.
+  * Add a version to debhelper generated snippets.
+  * Make install helper shellcheck clean
+
+ -- David Bremner <bremner@debian.org>  Mon, 04 Sep 2023 06:53:57 -0300
+
+dh-elpa (2.0.17) unstable; urgency=medium
+
+  * Bug fix: "Ugly // in symlinks", thanks to Sven Joachim (Closes:
+    #1030560).
+
+ -- David Bremner <bremner@debian.org>  Sun, 23 Jul 2023 07:10:38 -0300
+
 dh-elpa (2.0.16) unstable; urgency=medium
 
   * Drop dependencies on emacs-el introduced in 2.0.11.

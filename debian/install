@@ -1,3 +1,4 @@
 elpa.pm usr/share/perl5/Debian/Debhelper/Sequence
 emacsen-common usr/share/debhelper/dh_elpa
+autoscripts/prerm-elpa usr/share/debhelper/autoscripts
 usr/bin

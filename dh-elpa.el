@@ -83,7 +83,9 @@ set and disagree."
     (narrow-to-region start (point))
     (require 'lisp-mnt)
     ;; Use some headers we've invented to drive the process.
-    (let* ((requires-str (lm-header "package-requires"))
+    (let* ((requires-list (lm-header-multiline "package-requires"))
+	   (requires-str (and requires-list
+			      (mapconcat #'identity requires-list " ")))
 	   ;; Prefer Package-Version; if defined, the package author
 	   ;; probably wants us to use it.  Otherwise try Version.
 	   (pkg-version
@@ -96,13 +98,10 @@ set and disagree."
          "Package lacks a \"Version\" or \"Package-Version\"
 header, and neither of the DEB_UPSTREAM_VERSION and
 DEB_VERSION_UPSTREAM environment variables are set."))
-      (package-desc-from-define
-       file-name pkg-version desc
-       (if requires-str
-           (package--prepare-dependencies
-            (package-read-from-string requires-str)))
-       :kind 'single
-       :url homepage))))
+      (package-desc-from-define file-name pkg-version desc
+				(lm-package-requires)
+				:kind 'single
+				:url homepage))))
 
 (defun dhelpa-getenv-version ()
   "Return the package version as found in standard DEB_* environment variables.
@@ -157,9 +156,10 @@ a pre-release).  The Debian package maintainer should patch the
 upstream source to include a proper Package-Version: header in
 such a case."
   (when version
-    (replace-regexp-in-string
-     "~" "-"
-     (replace-regexp-in-string "~bpo.*$" "" version))))
+    (let* ((version (replace-regexp-in-string "~bpo.*$" "" version))
+           (version (replace-regexp-in-string "[+-~]git.*$" "-git" version))
+           (version (replace-regexp-in-string "~" "-" version)))
+      version)))
 
 (defun null-empty-string (str)
   "If STR is a string of length zero, return nil.  Otherwise, return STR."
@@ -182,9 +182,19 @@ These are packaged separately for two reasons:
 - it allows us to provide newer versions than those in Emacs core
 
 - it permits use of addons with older versions of Emacs, for
-  which the dependency is not yet a built-in package."
+  which the dependency is not yet a built-in package.
+
+A shortcoming is that for built-in packages, the Lisp in our elpa-*
+packages always takes precedence, such that if we upload a new release of
+Emacs with a version of one of these packages that's newer than the one we
+have separately packaged, the older code will be loaded, leading to
+hard-to-diagnose incompatibilities.
+
+For the time being the upshot is that after uploading a new Emacs release
+to sid, we also need to ensure everything listed here is up-to-date with
+upstream in sid, too."
   (let ((non-elpa '(emacs))
-        (packaged-separately '(let-alist seq xref org project)))
+        (packaged-separately '(let-alist transient org)))
     (cl-remove-if (lambda (dep)
 		    (let ((pkg (car dep)))
                       (or (memq pkg non-elpa)

@@ -122,6 +122,13 @@ instance spawned by B<dh_elpa_test> to run those tests.
 A comma-separated list of directories to add to the load-path when
 B<dh_elpa_test> invokes Emacs to run ERT tests.
 
+=item B<ert_selectors>
+
+A Lisp expression specifying a set of tests.  This is the same as ERT test
+selectors and will be passed to ERT through command line.  Note that this is
+disabled when B<ert_eval> is specified, and you'll have to manually specify the
+selectors in the helper script.
+
 =item B<autopkgtest_keep>
 
 A comma-separated list of file globs matching files that should not be
@@ -262,10 +269,16 @@ if ($autopkgtest) {
         exit 0;
     }
 
+    # Compile a list of files to be renamed during autopkgtest.  This usually
+    # renames source *.el file outside the test directories so that during
+    # autopkgtest we are testing the installed package instead of relying on
+    # source files from the source directory.
     my $rule = File::Find::Rule->new;
     $rule
       ->or(File::Find::Rule
-           ->name('.pc', 'debian', '.git')
+           ->name('.pc', 'debian', '.git', # exclude non-source directories
+                  'test', 'tests', # exclude test directories
+           )
            ->directory->prune->discard,
            File::Find::Rule->new);
     $rule
@@ -331,6 +344,8 @@ if ($autopkgtest) {
 
 if ($control->source->Build_Depends->has( "elpa-buttercup" )) {
     my @args = qw{ buttercup -L . };
+    push @args, ('--traceback', 'pretty');
+
     if (defined $options->{_}->{'buttercup_load_path'}) {
         foreach my $dir (split(',', $options->{_}->{'buttercup_load_path'})) {
             push @args, ('-L', "$dir");
@@ -367,6 +382,7 @@ if (@ert_files) {
     my @args = qw{ emacs -batch -Q -l package };
     push @args, ("--eval", "(add-to-list 'package-directory-list \"$dhelpadir\")");
     push @args, ("--eval", "(add-to-list 'package-directory-list \"$elpadir\")");
+    push @args, ("--eval", "(setq ert-batch-backtrace-right-margin nil)");
     push @args, ("-f", "package-initialize");
 
     # add the user's load-path entries
@@ -391,8 +407,11 @@ if (@ert_files) {
     }
     if (defined $options->{_}->{'ert_helper'}) {
         push @args, ("-l", $options->{_}->{'ert_helper'});
+    } elsif (defined $options->{_}->{'ert_selectors'}) {
+        my $ert_selectors = $options->{_}->{'ert_selectors'};
+        push @args, ("--eval", "(ert-run-tests-batch-and-exit ${ert_selectors})");
     } else {
-        push @args, ("--eval", "(ert-run-tests-batch-and-exit)");
+        push @args, ("-f", "ert-run-tests-batch-and-exit");
     }
 
     print_and_doit(@args);

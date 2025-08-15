@@ -1,6 +1,10 @@
 #!/bin/sh
 # invoke from /usr/lib/emacsen-common/packages/remove/${PACKAGE}
-
+# or directly from the package prerm
 set -e
 
-/usr/lib/dh-elpa/helper/remove $1 #ELPAPACKAGE# #ELPAVERSION# #EMACSLOADPATH#
+elpadir="/usr/share/$1/site-lisp/elpa"
+rm --one-file-system -rf "$elpadir/#ELPAPACKAGE#-#ELPAVERSION#"
+if [ -d "$elpadir" ]; then
+    rmdir --ignore-fail-on-non-empty "$elpadir"
+fi

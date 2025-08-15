@@ -3,4 +3,4 @@
 
 set -e
 
-/usr/lib/dh-elpa/helper/install $1 #ELPAPACKAGE# #ELPAVERSION# #EMACSLOADPATH#
+/usr/lib/dh-elpa/helper/install "$1" #ELPAPACKAGE# #ELPAVERSION# #EMACSLOADPATH#

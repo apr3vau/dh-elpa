@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for flavor in /var/lib/emacsen-common/state/flavor/installed/*[!~]; do
+    /usr/lib/emacsen-common/packages/remove/#PACKAGE# $(basename "$flavor")
+done
+
